@@ -88,7 +88,7 @@ public class DBMySQLStrategy implements DBAccess {
     @Override
     public int updateRecord(String tableName, String pkKey, int pk, String colName, Object value){
         
-        int updates = 0;
+        int updates = 1;
         PreparedStatement pstmt = null;
         
         try{
@@ -132,8 +132,7 @@ public class DBMySQLStrategy implements DBAccess {
     }
     
     @Override
-//    INSERT INTO hotel ('hotel_name', 'street_address', 'city', 'state', 'postal_code', 'notes') VALUES ('TacoLand', '535 Taco Way', 'Las Vegas', 'Nevada', '57335', 'A place for tacos and taco lovers.');
-//    INSERT INTO `hotel`.`hotel` (`hotel_name`, `street_address`, `city`, `state`, `postal_code`, `notes`) VALUES ('TacoLand', '534 Taco Way', 'Las Vegas', 'Nevada', '53267', 'A place for tacos and taco lovers.');
+
     public int insertRecord(String tableName, List<String> colNames, List values){
         
         int updates = 0;
@@ -147,12 +146,12 @@ public class DBMySQLStrategy implements DBAccess {
             }
             sql = new StringBuilder(sql.toString().substring(0, sql.lastIndexOf(", ")) + ") VALUES (");
             for(int i = 0; i < values.size(); i++){
-                sql.append("'" + values.get(i).toString() + "', ");
+                sql.append("?,");
             }
             
             String finalSQL = sql.toString().substring(0, sql.lastIndexOf(", ")) + ");";
             
-//            System.out.println(finalSQL);
+            System.out.println(finalSQL);
             pstmt = conn.prepareStatement(finalSQL);
             updates = pstmt.executeUpdate();
      
@@ -166,10 +165,13 @@ public class DBMySQLStrategy implements DBAccess {
 
     }
     
-//    public static void main(String[] args) throws SQLException, ClassNotFoundException {
-//        DBAccess db = new DBMySQLStrategy();
-//        db.openConnection("com.mysql.jdbc.Driver","jdbc:mysql://localhost:3306/hotel","root","admin");
-//        
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+        DBAccess db = new DBMySQLStrategy();
+        db.openConnection("com.mysql.jdbc.Driver","jdbc:mysql://localhost:2205/hotel","root","admin");
+        
+        List<Map<String,Object>> hotels = db.findAllRecords("hotel");
+        System.out.println(hotels);
+//                
 //        List<String> colNames = new ArrayList<>();
 //        List values = new ArrayList();
 //        
@@ -180,15 +182,15 @@ public class DBMySQLStrategy implements DBAccess {
 //        colNames.add("postal_code");
 //        colNames.add("notes");
 //        
-//        values.add("TacoLand");
-//        values.add("535 Taco Way");
-//        values.add("Las Vegas");
-//        values.add("Nevada");
-//        values.add("57335");
-//        values.add("A place for tacos and taco lovers.");
+//        values.add("Peter Griffin");
+//        values.add("364 stewie drive");
+//        values.add("Miami Beach");
+//        values.add("Florda");
+//        values.add("54315");
+//        values.add("A place for relaxing at the beach");
 //        
 //        db.insertRecord("hotel", colNames, values);
-//        db.openConnection("com.mysql.jdbc.Driver","jdbc:mysql://localhost:3306/hotel","root","admin");
+//        db.openConnection("com.mysql.jdbc.Driver","jdbc:mysql://localhost:2205/hotel","root","admin");
 //        
 //        List<Map<String, Object>> hotels = db.findAllRecords("hotel");
 //        for(Map m : hotels){
@@ -196,7 +198,7 @@ public class DBMySQLStrategy implements DBAccess {
 //        }
 //        
 //        db.openConnection("com.mysql.jdbc.Driver","jdbc:mysql://localhost:3306/hotel","root","admin");
-//        db.deleteRecords("hotel", "hotel_id", 3);
+//        db.deleteRecord("hotel", "hotel_id", 2);
 //        
 //        db.openConnection("com.mysql.jdbc.Driver","jdbc:mysql://localhost:3306/hotel","root","admin");
 //        hotels = db.findAllRecords("hotel");
@@ -204,6 +206,6 @@ public class DBMySQLStrategy implements DBAccess {
 //            System.out.println(m);
 //        }
 //        
-//    }
+    }
     
 }
