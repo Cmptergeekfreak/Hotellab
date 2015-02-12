@@ -5,6 +5,7 @@
  */
 package hotellab;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,6 @@ public class hotelDaoStrategy implements hotelDao {
     private String username;
     private String password;
     
-    
     public hotelDaoStrategy(){
         dba = new DBMySQLStrategy();
         driver = hotelDataAccessFactory.getDriver();
@@ -32,8 +32,8 @@ public class hotelDaoStrategy implements hotelDao {
     
     @Override
     public List<hotel> findAllHotels() {
-                      
-        dba.openConnection(driver, url, username, password);
+        
+        dba.openConnection("com.mysql.jdbc.Driver","jdbc:mysql://localhost:2205/hotel","root","admin");
         List<Map<String, Object>> records = dba.findAllRecords("hotel");
         List<hotel> hotels = new ArrayList<>();
         hotel h = null;
@@ -44,23 +44,23 @@ public class hotelDaoStrategy implements hotelDao {
             h.setAddress(m.get("street_address").toString());
             h.setCity(m.get("city").toString());
             h.setState(m.get("state").toString());
-            
+            h.setPostalCode(m.get("postal_code").toString());
             String s = "";
             try{
                 s = m.get("notes").toString();
             }catch(NullPointerException npe){
                 s = "";
             }
-            
+            h.setNotes(s);
             hotels.add(h);
         }
         return hotels;
     }
     
     @Override
-    public int updatehotelrecord(int pk, String col, String value) {
+    public int updateHotelRecord(int pk, String col, String value) {
         
-        dba.openConnection(driver, url, username, password);
+        dba.openConnection("com.mysql.jdbc.Driver","jdbc:mysql://localhost:2205/hotel","root","admin");
         int updates = dba.updateRecord("hotel", "hotel_id", pk, col, value);
     
         return updates;
@@ -68,21 +68,24 @@ public class hotelDaoStrategy implements hotelDao {
     }
     
     @Override
-    public int inserthotelrecord(List<String> colNames, List values) {
-       dba.openConnection(driver, url, username, password);
+    public int insertHotelRecord(List<String> colNames, List values) {
+        
+        dba.openConnection("com.mysql.jdbc.Driver","jdbc:mysql://localhost:2205/hotel","root","admin");
         int updates = dba.insertRecord("hotel", colNames, values);
         
         return updates;
+        
     }
     
     @Override
-    public int deletehotelrecord(int pk) {
-        dba.openConnection(driver, url, username, password);
+    public int deleteHotelRecord(int pk) {
+        
+        dba.openConnection("com.mysql.jdbc.Driver","jdbc:mysql://localhost:2205/hotel","root","admin");
         int updates = dba.deleteRecord("hotel", "hotel_id", pk);
         
         return updates;
+        
     }
-   
     
     
 //    public static void main(String[] args) throws SQLException, ClassNotFoundException {
@@ -93,19 +96,5 @@ public class hotelDaoStrategy implements hotelDao {
 //        }
 //    }
 
-    @Override
-    public List<hotel> findallhotels() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    
-
-    
-
-   
-
-    
-
-    
-    
+     
 }
